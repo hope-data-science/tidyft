@@ -61,7 +61,9 @@ a
 
 If you still want to keep the original data, use `copy()` to make a copy beforehand.
 
+## Tutorial
 
+See [vignettes](https://hope-data-science.github.io/tidyft/).
 
 ## Performance
 
