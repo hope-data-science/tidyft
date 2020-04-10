@@ -1,0 +1,172 @@
+---
+title: "Fastest data operations with least memory in tidy syntax"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Why tidyft?
+
+Before [tidyft](https://github.com/hope-data-science/tidyft), I've designed a package named [tidyfst](https://github.com/hope-data-science/tidyfst). Backed by *data.table*, it is fast and convenient. By then, I was not so interested in modification by reference, which always cause trouble in my workflow. Therefore, I use a lot of functions to make copies so as to suppress the in place replacement. However, when it comes to big data, simply making a new copy of the original data set could be time consuming and memory inefficient. So I tried to write some functions using the feature of modification by reference. This ends up in inconsistency of many functions in the *tidyfst* package. In the end, I removed all the in place replacement functions in *tidyfst* and build a new package instead. This is how *tidyft* come into being.
+
+## The philosophy of tidyft
+
+> You cannot step into the same river twice, for other waters are continually flowing on. <br>
+> <br>
+> [—— Heraclitus]{style="float:right"}
+> <br>
+
+If you try to do data operations on any data.table(s), never use it again for futher analysis, because it is not the data you know before. And you might never figure out what have happened and what has been changed in that process. If you really want to use it again, try make a copy first using `copy()`, which might take extra time and space (that's why tidyft avoid doing this all the time).<br><br>
+
+Another rule is, tidyft only deals with data.table(s), the raw data.frame and other formats such as tibble could not work. If you already have lots of data.frames in the environment, try these codes.
+
+```{r setup}
+library(tidyft)
+
+# make copies
+copy(iris) -> a
+copy(mtcars) -> b
+
+# before
+class(a)
+class(b)
+
+# convert codes
+lapply(ls(),get) %>%
+  lapply(setDT) %>% 
+  invisible()
+
+# after
+class(a)
+class(b)
+```
+
+One last thing, while modifications are carried out in place, doesn't mean that the results could not be showed after operation. The data.table package would return it invisibly, but in tidyft, I always show the final data.table. This brings no reduction to the computation performance.
+
+## Working with fst
+
+tidyft would not be so powerful without [fst](https://github.com/fstpackage/fst). I first introduce this workflow into [tidyfst](https://hope-data-science.github.io/tidyfst/articles/example5_fst.html). In such workflow, you do not have to read all data into memory, only import the needed data when necessary. tidyft is not so convenient for in-memory operations, but it works very well (if not best) with the fst workflow. Here we'll make some examples.
+
+```{r}
+rm(list = ls())
+
+library(tidyft)
+# make a large data.frame
+iris[rep(1:nrow(iris),1e4),] -> dt
+# size: 1500000 rows, 5 columns
+dim(dt)
+# save as fst table
+as_fst(dt) -> ft
+# remove the data.frame from RAM
+rm(dt)
+
+# inspect the fst table of large iris
+ft
+summary_fst(ft)
+
+# list the variables in the environment
+ls() # only the ft exists
+```
+
+The `as_fst` could save any data.frame as ".fst" file in temporary file and parse it back as fst table. Fst table is small in RAM, but if you want to get any part of the data.frame, you can get it in almost no time:
+
+```{r}
+ft %>% 
+  slice_fst(5555:6666)  # get 5555 to 6666 row
+```
+
+
+
+Except for `slice_fst`, there are also other functions for subsetting the data, such as `select_fst`,`filter_fst`. Good practice is: Make subsets of the data and use the least needy data to do operations. For very large data sets, you may try to do tests on a sample of the data (using `slice` or `select` to get several rows or columns) first before you implement a huge operation. Now let's do a slightly complex manipulation. We'll use `sys_time_print` to measure the running time.
+
+```{r}
+
+sys_time_print({
+  res =  ft %>% 
+   select_fst(Species,Sepal.Length,Sepal.Width) %>% 
+   rename(group = Species,sl = Sepal.Length,sw = Sepal.Width) %>% 
+   arrange(group,sl) %>% 
+   filter(sl > 5) %>% 
+   distinct(sl,.keep_all = TRUE) %>% 
+   summarise(sw = max(sw),by = group)
+})
+
+res
+  
+```
+
+This should be pretty fast. Becasue when we use the data in fst table, we never get them until using the "_fst" suffix functions, so the tidyft functions never modify the data in the fst file or fst table. That is to say, we do not have to worry about the modification by reference any more. No copies made, fastest ever.
+
+## Performance
+The fst workflow could also be working with other tools, though less efficient. Now let's compare the performance of tidyft, data.table and dplyr.
+
+```{r}
+library(profvis)
+library(data.table)
+library(dplyr)
+
+profvis({
+  
+  res1 = ft %>% 
+   select_fst(Species,Sepal.Length,Sepal.Width,Petal.Length) %>% 
+   dplyr::select(-Petal.Length) %>% 
+   dplyr::rename(group = Species,sl = Sepal.Length,sw = Sepal.Width) %>% 
+   dplyr::arrange(group,sl) %>% 
+   dplyr::filter(sl > 5) %>% 
+   dplyr::distinct(sl,.keep_all = TRUE) %>% 
+   dplyr::group_by(group) %>% 
+   dplyr::summarise(sw = max(sw))
+  
+  res2 = ft[,c("Species","Sepal.Length","Sepal.Width","Petal.Length")] %>%  
+    setDT() %>%
+    .[,.SD,.SDcols = -"Petal.Length"] %>% 
+    setnames(old =c("Species","Sepal.Length","Sepal.Width"),
+             new = c("group","sl","sw")) %>% 
+    setorder(group,sl) %>% 
+    .[sl>5] %>% unique(by = "sl") %>% 
+    .[,.(sw = max(sw)),by = group]
+    
+  
+  res3 =  ft %>% 
+   tidyft::select_fst(Species,Sepal.Length,Sepal.Width,Petal.Length) %>% 
+   tidyft::select(-Petal.Length) %>% 
+   tidyft::rename(group = Species,sl = Sepal.Length,sw = Sepal.Width) %>% 
+   tidyft::arrange(group,sl) %>% 
+   tidyft::filter(sl > 5) %>% 
+   tidyft::distinct(sl,.keep_all = TRUE) %>% 
+   tidyft::summarise(sw = max(sw),by = group)
+  
+  
+})
+
+setequal(res1,res2)
+setequal(res2,res3)
+
+```
+
+Because tidyft is based on data.table, therefore, if you always use data.table correctly, then tidyft should not perform better than data.table (I do use some tricks, by never do column selection but delete the unselected ones instead, which is faster and more memory efficient than using `.SDcols` in data.table). However, tidyft has a very different syntax, which might be more readable. And lots of complex operations of data.table has been wrapped in it. This could save your day to write the correct codes sometimes. I hope all my time devoted to this work could possibly save some of your valuable time on data operations of big datasets.
+
+
+## Session Information
+```{r}
+sessionInfo()
+```
+
+
+
+
+
+
+
+
+
+
