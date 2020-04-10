@@ -110,23 +110,52 @@ This should be pretty fast. Becasue when we use the data in fst table, we never 
 The fst workflow could also be working with other tools, though less efficient. Now let's compare the performance of tidyft, data.table and dplyr.
 
 ```{r}
+
+rm(list = ls())
+
 library(profvis)
 library(data.table)
 library(dplyr)
+library(dtplyr)
+library(tidyft)
+
+
+# make a large data.frame
+iris[rep(1:nrow(iris),1e4),] -> dt
+# size: 1500000 rows, 5 columns
+dim(dt)
+# save as fst table
+as_fst(dt) -> ft
+# remove the data.frame from RAM
+rm(dt)
+  
 
 profvis({
   
   res1 = ft %>% 
-   select_fst(Species,Sepal.Length,Sepal.Width,Petal.Length) %>% 
-   dplyr::select(-Petal.Length) %>% 
-   dplyr::rename(group = Species,sl = Sepal.Length,sw = Sepal.Width) %>% 
-   dplyr::arrange(group,sl) %>% 
-   dplyr::filter(sl > 5) %>% 
-   dplyr::distinct(sl,.keep_all = TRUE) %>% 
-   dplyr::group_by(group) %>% 
-   dplyr::summarise(sw = max(sw))
+    select_fst(Species,Sepal.Length,Sepal.Width,Petal.Length) %>% 
+    dplyr::select(-Petal.Length) %>% 
+    dplyr::rename(group = Species,sl = Sepal.Length,sw = Sepal.Width) %>% 
+    dplyr::arrange(group,sl) %>% 
+    dplyr::filter(sl > 5) %>% 
+    dplyr::distinct(sl,.keep_all = TRUE) %>% 
+    dplyr::group_by(group) %>% 
+    dplyr::summarise(sw = max(sw))
   
-  res2 = ft[,c("Species","Sepal.Length","Sepal.Width","Petal.Length")] %>%  
+  res2 = ft %>% 
+    select_fst(Species,Sepal.Length,Sepal.Width,Petal.Length) %>% 
+    as_tibble() %>% 
+    lazy_dt() %>% 
+    dplyr::select(-Petal.Length) %>% 
+    dplyr::rename(group = Species,sl = Sepal.Length,sw = Sepal.Width) %>% 
+    dplyr::arrange(group,sl) %>% 
+    dplyr::filter(sl > 5) %>% 
+    dplyr::distinct(sl,.keep_all = TRUE) %>% 
+    dplyr::group_by(group) %>% 
+    dplyr::summarise(sw = max(sw)) %>% 
+    as.data.table()
+  
+  res3 = ft[,c("Species","Sepal.Length","Sepal.Width","Petal.Length")] %>%  
     setDT() %>%
     .[,.SD,.SDcols = -"Petal.Length"] %>% 
     setnames(old =c("Species","Sepal.Length","Sepal.Width"),
@@ -134,22 +163,23 @@ profvis({
     setorder(group,sl) %>% 
     .[sl>5] %>% unique(by = "sl") %>% 
     .[,.(sw = max(sw)),by = group]
-    
   
-  res3 =  ft %>% 
-   tidyft::select_fst(Species,Sepal.Length,Sepal.Width,Petal.Length) %>% 
-   tidyft::select(-Petal.Length) %>% 
-   tidyft::rename(group = Species,sl = Sepal.Length,sw = Sepal.Width) %>% 
-   tidyft::arrange(group,sl) %>% 
-   tidyft::filter(sl > 5) %>% 
-   tidyft::distinct(sl,.keep_all = TRUE) %>% 
-   tidyft::summarise(sw = max(sw),by = group)
+  
+  res4 =  ft %>% 
+    tidyft::select_fst(Species,Sepal.Length,Sepal.Width,Petal.Length) %>% 
+    tidyft::select(-Petal.Length) %>% 
+    tidyft::rename(group = Species,sl = Sepal.Length,sw = Sepal.Width) %>% 
+    tidyft::arrange(group,sl) %>% 
+    tidyft::filter(sl > 5) %>% 
+    tidyft::distinct(sl,.keep_all = TRUE) %>% 
+    tidyft::summarise(sw = max(sw),by = group)
   
   
 })
 
 setequal(res1,res2)
 setequal(res2,res3)
+setequal(res3,res4)
 
 ```
 
