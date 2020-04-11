@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 
 ## Why tidyft?
 
-Before [tidyft](https://github.com/hope-data-science/tidyft), I've designed a package named [tidyfst](https://github.com/hope-data-science/tidyfst). Backed by *data.table*, it is fast and convenient. By then, I was not so interested in modification by reference, which always cause trouble in my workflow. Therefore, I use a lot of functions to make copies so as to suppress the in place replacement. However, when it comes to big data, simply making a new copy of the original data set could be time consuming and memory inefficient. So I tried to write some functions using the feature of modification by reference. This ends up in inconsistency of many functions in the *tidyfst* package. In the end, I removed all the in place replacement functions in *tidyfst* and build a new package instead. This is how *tidyft* come into being.
+Before [tidyft](https://github.com/hope-data-science/tidyft), I've designed a package named [tidyfst](https://github.com/hope-data-science/tidyfst). Backed by *data.table*, it is fast and convenient. By then, I was not so interested in modification by reference, which always causes trouble in my workflow. Therefore, I use a lot of functions to make copies so as to suppress the in place replacement. However, when it comes to big data, simply making a new copy of the original data set could be time consuming and memory inefficient. So I tried to write some functions using the feature of modification by reference. This ends up in inconsistency of many functions in the *tidyfst* package. In the end, I removed all the in place replacement functions in *tidyfst* and build a new package instead. This is how *tidyft* comes into being.
 
 ## The philosophy of tidyft
 
@@ -50,7 +50,7 @@ class(a)
 class(b)
 ```
 
-One last thing, while modifications are carried out in place, doesn't mean that the results could not be showed after operation. The data.table package would return it invisibly, but in tidyft, I always show the final data.table. This brings no reduction to the computation performance.
+One last thing, while modifications are carried out in place, doesn't mean that the results could not be showed after operation. The data.table package would return it invisibly, but in tidyft, the final results are always printed if possible. This brings no reduction to the computation performance.
 
 ## Working with fst
 
@@ -107,7 +107,7 @@ res
 This should be pretty fast. Becasue when we use the data in fst table, we never get them until using the "_fst" suffix functions, so the tidyft functions never modify the data in the fst file or fst table. That is to say, we do not have to worry about the modification by reference any more. No copies made, fastest ever.
 
 ## Performance
-The fst workflow could also be working with other tools, though less efficient. Now let's compare the performance of tidyft, data.table and dplyr.
+The fst workflow could also be working with other tools, though less efficient. Now let's compare the performance of tidyft, data.table, dtplyr and dplyr.
 
 ```{r}
 
@@ -144,7 +144,6 @@ profvis({
   
   res2 = ft %>% 
     select_fst(Species,Sepal.Length,Sepal.Width,Petal.Length) %>% 
-    as_tibble() %>% 
     lazy_dt() %>% 
     dplyr::select(-Petal.Length) %>% 
     dplyr::rename(group = Species,sl = Sepal.Length,sw = Sepal.Width) %>% 

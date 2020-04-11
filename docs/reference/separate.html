@@ -176,14 +176,14 @@ Analogous to <code><a href='https://tidyr.tidyverse.org/reference/separate.html'
     <div class='dont-index'><p><code><a href='https://tidyr.tidyverse.org/reference/separate.html'>separate</a></code>, <code><a href='https://rdrr.io/pkg/tidyfst/man/unite_dt.html'>unite_dt</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>df</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/data.table/man/data.table.html'>data.table</a></span>(<span class='kw'>x</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>NA</span>, <span class='st'>"a.b"</span>, <span class='st'>"a.d"</span>, <span class='st'>"b.c"</span>))
+    <pre class="examples"><div class='input'><span class='no'>df</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://Rdatatable.gitlab.io/data.table/reference/data.table.html'>data.table</a></span>(<span class='kw'>x</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>NA</span>, <span class='st'>"a.b"</span>, <span class='st'>"a.d"</span>, <span class='st'>"b.c"</span>))
 <span class='no'>df</span> <span class='kw'>%&gt;%</span> <span class='fu'>separate</span>(<span class='no'>x</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"A"</span>, <span class='st'>"B"</span>))</div><div class='output co'>#&gt;         A      B
 #&gt;    &lt;char&gt; &lt;char&gt;
 #&gt; 1:   &lt;NA&gt;   &lt;NA&gt;
 #&gt; 2:      a      b
 #&gt; 3:      a      d
 #&gt; 4:      b      c</div><div class='input'><span class='co'># equals to</span>
-<span class='no'>df</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/data.table/man/data.table.html'>data.table</a></span>(<span class='kw'>x</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>NA</span>, <span class='st'>"a.b"</span>, <span class='st'>"a.d"</span>, <span class='st'>"b.c"</span>))
+<span class='no'>df</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://Rdatatable.gitlab.io/data.table/reference/data.table.html'>data.table</a></span>(<span class='kw'>x</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>NA</span>, <span class='st'>"a.b"</span>, <span class='st'>"a.d"</span>, <span class='st'>"b.c"</span>))
 <span class='no'>df</span> <span class='kw'>%&gt;%</span> <span class='fu'>separate</span>(<span class='st'>"x"</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"A"</span>, <span class='st'>"B"</span>))</div><div class='output co'>#&gt;         A      B
 #&gt;    &lt;char&gt; &lt;char&gt;
 #&gt; 1:   &lt;NA&gt;   &lt;NA&gt;

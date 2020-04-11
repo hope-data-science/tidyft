@@ -172,7 +172,7 @@ features for statistical usage.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-<span class='no'>iris</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/data.table/man/as.data.table.html'>as.data.table</a></span>(<span class='no'>iris</span>)
+<span class='no'>iris</span> <span class='kw'>=</span> <span class='fu'><a href='https://Rdatatable.gitlab.io/data.table/reference/as.data.table.html'>as.data.table</a></span>(<span class='no'>iris</span>)
 <span class='no'>iris</span> <span class='kw'>%&gt;%</span> <span class='fu'>dummy</span>(<span class='no'>Species</span>)</div><div class='output co'>#&gt; Key: &lt;Sepal.Length, Sepal.Width, Petal.Length, Petal.Width&gt;
 #&gt;      Sepal.Length Sepal.Width Petal.Length Petal.Width Species_setosa
 #&gt;             &lt;num&gt;       &lt;num&gt;        &lt;num&gt;       &lt;num&gt;          &lt;num&gt;
@@ -226,7 +226,7 @@ features for statistical usage.</p>
 #&gt; 148:         1
 #&gt; 149:         1
 #&gt; 150:         1</div><div class='input'>
-<span class='no'>mtcars</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/data.table/man/as.data.table.html'>as.data.table</a></span>(<span class='no'>mtcars</span>)
+<span class='no'>mtcars</span> <span class='kw'>=</span> <span class='fu'><a href='https://Rdatatable.gitlab.io/data.table/reference/as.data.table.html'>as.data.table</a></span>(<span class='no'>mtcars</span>)
 <span class='no'>mtcars</span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span>() <span class='kw'>%&gt;%</span> <span class='fu'>dummy</span>(<span class='no'>vs</span>,<span class='no'>am</span>)</div><div class='output co'>#&gt; Key: &lt;mpg, cyl, disp, hp, drat, wt, qsec, gear, carb, vs_0, vs_1&gt;
 #&gt;      mpg   cyl  disp    hp  drat    wt  qsec  gear  carb  vs_0  vs_1  am_0
 #&gt;    &lt;num&gt; &lt;num&gt; &lt;num&gt; &lt;num&gt; &lt;num&gt; &lt;num&gt; &lt;num&gt; &lt;num&gt; &lt;num&gt; &lt;num&gt; &lt;num&gt; &lt;num&gt;
