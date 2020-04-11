@@ -16,9 +16,7 @@ This design is best for big data manipulation on out of memory data using facili
 You can install the released version of tidyft via:
 
 ``` r
-devtools::install_github("hope-data-science/tidyft")
-# or
-# install.packages("tidyft") # not available yet
+install.packages("tidyft") 
 ```
 
 ## Example
