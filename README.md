@@ -1,4 +1,4 @@
-# tidyft: Tidy Verbs for Fast Data Operations by Reference<img src="man/figures/logo.png" align="right" alt="" width="120" />
+# tidyft: Fast and Memory Efficient Data Operations in Tidy Syntax<img src="man/figures/logo.png" align="right" alt="" width="120" />
 
 <!-- badges: start -->
 
@@ -66,8 +66,6 @@ See [vignettes](https://hope-data-science.github.io/tidyft/).
 ## Performance
 
 ```
-
-
 rm(list = ls())
 
 library(profvis)
@@ -92,7 +90,6 @@ profvis({
     tidyft::setDT() %>%
     tidyft::select("name|color$") %>%
     tidyft::arrange(hair_color,skin_color,eye_color) -> c
-
 
 })
 
