@@ -26,7 +26,7 @@
 #' df %>% unite("xy", x:y,remove = TRUE)
 #'
 #' # Select all columns
-#' iris %>% as.data.table %>% unite("merged_name","")
+#' iris %>% as.data.table %>% unite("merged_name",".")
 
 #' @export
 unite = function(.data,united_colname,...,
