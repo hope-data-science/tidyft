@@ -26,5 +26,6 @@ Suggests:
     knitr,
     rmarkdown,
     profvis,
-    dplyr
+    dplyr,
+    dtplyr
 VignetteBuilder: knitr
