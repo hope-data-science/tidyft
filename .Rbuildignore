@@ -1,0 +1,8 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+^LICENSE\.md$
+^cran-comments\.md$
+^pkgdown$
+^dev\.R$
+^docs$
+^performance\.png$

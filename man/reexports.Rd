@@ -24,8 +24,8 @@ These objects are imported from other packages. Follow the links
 below to see their documentation.
 
 \describe{
-  \item{data.table}{\code{\link[data.table]{as.data.table}}, \code{\link[data.table]{CJ}}, \code{\link[data.table]{copy}}, \code{\link[data.table]{data.table}}, \code{\link[data.table]{fcoalesce}}, \code{\link[data.table]{fread}}, \code{\link[data.table]{fwrite}}, \code{\link[data.table]{rbindlist}}, \code{\link[data.table]{setDT}}, \code{\link[data.table]{setnames}}, \code{\link[data.table]{tables}}, \code{\link[data.table]{transpose}}, \code{\link[data.table]{uniqueN}}}
+  \item{data.table}{\code{\link[data.table:J]{CJ}}, \code{\link[data.table]{as.data.table}}, \code{\link[data.table]{copy}}, \code{\link[data.table]{data.table}}, \code{\link[data.table:coalesce]{fcoalesce}}, \code{\link[data.table]{fread}}, \code{\link[data.table]{fwrite}}, \code{\link[data.table]{rbindlist}}, \code{\link[data.table]{setDT}}, \code{\link[data.table:setattr]{setnames}}, \code{\link[data.table]{tables}}, \code{\link[data.table]{transpose}}, \code{\link[data.table:duplicated]{uniqueN}}}
 
-  \item{stringr}{\code{\link[stringr]{\%>\%}}}
+  \item{stringr}{\code{\link[stringr:pipe]{\%>\%}}}
 }}
 
