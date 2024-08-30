@@ -2,7 +2,7 @@
 
 <!-- badges: start -->
 
- [![](https://www.r-pkg.org/badges/version/tidyft?color=black)](https://cran.r-project.org/package=tidyft) [![](http://cranlogs.r-pkg.org/badges/grand-total/tidyft?color=black)](https://cran.r-project.org/package=tidyft)
+ [![](https://www.r-pkg.org/badges/version/tidyft?color=black)](https://cran.r-project.org/package=tidyft) [![downloads](http://cranlogs.r-pkg.org/badges/grand-total/tidyft?color=black)](https://r-pkg.org/pkg/tidyft)
 
 <!-- badges: end -->
 
