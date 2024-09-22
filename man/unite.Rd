@@ -42,7 +42,7 @@ df \%>\% unite("z", x:y, na2char = TRUE, remove = FALSE)
 df \%>\% unite("xy", x:y,remove = TRUE)
 
 # Select all columns
-iris \%>\% as.data.table \%>\% unite("merged_name","")
+iris \%>\% as.data.table \%>\% unite("merged_name",".")
 }
 \seealso{
 \code{\link[tidyr]{unite}},\code{\link[tidyft]{separate}}
