@@ -42,7 +42,7 @@ class(b)
 
 # convert codes
 lapply(ls(),get) %>%
-  lapply(setDT) %>% 
+  lapply(setDT) %>%
   invisible()
 
 # after
@@ -80,7 +80,7 @@ ls() # only the ft exists
 The `as_fst` could save any data.frame as ".fst" file in temporary file and parse it back as fst table. Fst table is small in RAM, but if you want to get any part of the data.frame, you can get it in almost no time:
 
 ```{r}
-ft %>% 
+ft %>%
   slice_fst(5555:6666)  # get 5555 to 6666 row
 ```
 
@@ -91,17 +91,17 @@ Except for `slice_fst`, there are also other functions for subsetting the data, 
 ```{r}
 
 sys_time_print({
-  res =  ft %>% 
-   select_fst(Species,Sepal.Length,Sepal.Width) %>% 
-   rename(group = Species,sl = Sepal.Length,sw = Sepal.Width) %>% 
-   arrange(group,sl) %>% 
-   filter(sl > 5) %>% 
-   distinct(sl,.keep_all = TRUE) %>% 
+  res =  ft %>%
+   select_fst(Species,Sepal.Length,Sepal.Width) %>%
+   rename(group = Species,sl = Sepal.Length,sw = Sepal.Width) %>%
+   arrange(group,sl) %>%
+   filter(sl > 5) %>%
+   distinct(sl,.keep_all = TRUE) %>%
    summarise(sw = max(sw),by = group)
 })
 
 res
-  
+
 ```
 
 This should be pretty fast. Becasue when we use the data in fst table, we never get them until using the "_fst" suffix functions, so the tidyft functions never modify the data in the fst file or fst table. That is to say, we do not have to worry about the modification by reference any more. No copies made, fastest ever.
@@ -113,7 +113,6 @@ The fst workflow could also be working with other tools, though less efficient. 
 
 rm(list = ls())
 
-library(profvis)
 library(data.table)
 library(dplyr)
 library(dtplyr)
@@ -128,57 +127,53 @@ dim(dt)
 as_fst(dt) -> ft
 # remove the data.frame from RAM
 rm(dt)
-  
 
-profvis({
-  
-  res1 = ft %>% 
-    select_fst(Species,Sepal.Length,Sepal.Width,Petal.Length) %>% 
-    dplyr::select(-Petal.Length) %>% 
-    dplyr::rename(group = Species,sl = Sepal.Length,sw = Sepal.Width) %>% 
-    dplyr::arrange(group,sl) %>% 
-    dplyr::filter(sl > 5) %>% 
-    dplyr::distinct(sl,.keep_all = TRUE) %>% 
-    dplyr::group_by(group) %>% 
-    dplyr::summarise(sw = max(sw))
-  
-  res2 = ft %>% 
-    select_fst(Species,Sepal.Length,Sepal.Width,Petal.Length) %>% 
-    lazy_dt() %>% 
-    dplyr::select(-Petal.Length) %>% 
-    dplyr::rename(group = Species,sl = Sepal.Length,sw = Sepal.Width) %>% 
-    dplyr::arrange(group,sl) %>% 
-    dplyr::filter(sl > 5) %>% 
-    dplyr::distinct(sl,.keep_all = TRUE) %>% 
-    dplyr::group_by(group) %>% 
-    dplyr::summarise(sw = max(sw)) %>% 
-    as.data.table()
-  
-  res3 = ft[,c("Species","Sepal.Length","Sepal.Width","Petal.Length")] %>%  
+
+bench::mark(
+
+  dplyr = ft %>%
+    select_fst(Species,Sepal.Length,Sepal.Width,Petal.Length) %>%
+    dplyr::select(-Petal.Length) %>%
+    dplyr::rename(group = Species,sl = Sepal.Length,sw = Sepal.Width) %>%
+    dplyr::arrange(group,sl) %>%
+    dplyr::filter(sl > 5) %>%
+    dplyr::distinct(sl,.keep_all = TRUE) %>%
+    dplyr::group_by(group) %>%
+    dplyr::summarise(sw = max(sw)),
+
+  dtplyr = ft %>%
+    select_fst(Species,Sepal.Length,Sepal.Width,Petal.Length) %>%
+    lazy_dt() %>%
+    dplyr::select(-Petal.Length) %>%
+    dplyr::rename(group = Species,sl = Sepal.Length,sw = Sepal.Width) %>%
+    dplyr::arrange(group,sl) %>%
+    dplyr::filter(sl > 5) %>%
+    dplyr::distinct(sl,.keep_all = TRUE) %>%
+    dplyr::group_by(group) %>%
+    dplyr::summarise(sw = max(sw)) %>%
+    as.data.table(),
+
+  data.table = ft[,c("Species","Sepal.Length","Sepal.Width","Petal.Length")] %>%
     setDT() %>%
-    .[,.SD,.SDcols = -"Petal.Length"] %>% 
+    .[,.SD,.SDcols = -"Petal.Length"] %>%
     setnames(old =c("Species","Sepal.Length","Sepal.Width"),
-             new = c("group","sl","sw")) %>% 
-    setorder(group,sl) %>% 
-    .[sl>5] %>% unique(by = "sl") %>% 
-    .[,.(sw = max(sw)),by = group]
-  
-  
-  res4 =  ft %>% 
-    tidyft::select_fst(Species,Sepal.Length,Sepal.Width,Petal.Length) %>% 
-    tidyft::select(-Petal.Length) %>% 
-    tidyft::rename(group = Species,sl = Sepal.Length,sw = Sepal.Width) %>% 
-    tidyft::arrange(group,sl) %>% 
-    tidyft::filter(sl > 5) %>% 
-    tidyft::distinct(sl,.keep_all = TRUE) %>% 
-    tidyft::summarise(sw = max(sw),by = group)
-  
-  
-})
+             new = c("group","sl","sw")) %>%
+    setorder(group,sl) %>%
+    .[sl>5] %>% unique(by = "sl") %>%
+    .[,.(sw = max(sw)),by = group],
 
-setequal(res1,res2)
-setequal(res2,res3)
-setequal(res3,res4)
+
+  tidyft =  ft %>%
+    tidyft::select_fst(Species,Sepal.Length,Sepal.Width,Petal.Length) %>%
+    tidyft::select(-Petal.Length) %>%
+    tidyft::rename(group = Species,sl = Sepal.Length,sw = Sepal.Width) %>%
+    tidyft::arrange(group,sl) %>%
+    tidyft::filter(sl > 5) %>%
+    tidyft::distinct(sl,.keep_all = TRUE) %>%
+    tidyft::summarise(sw = max(sw),by = group),
+
+  check = setequal
+)
 
 ```
 
@@ -189,13 +184,3 @@ Because tidyft is based on data.table, therefore, if you always use data.table c
 ```{r}
 sessionInfo()
 ```
-
-
-
-
-
-
-
-
-
-

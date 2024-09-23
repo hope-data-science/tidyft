@@ -10,6 +10,7 @@
 #' or column(s) to be unnested(for \code{unnest}).
 #' Could recieve anything that \code{\link[tidyfst]{select_dt}} could receive.
 #' @param mcols Name-variable pairs in the list, form like
+#' @param .name Character. The nested column name. Defaults to "ndt".
 #' \code{list(petal="^Pe",sepal="^Se")}, see example.
 #' @return data.table, nested or unnested
 #' @details In the \code{nest}, the data would be nested to a column named `ndt`,
@@ -85,12 +86,12 @@
 #' @export
 
 # nest by which columns?
-
-nest = function(.data,...,mcols = NULL){
+nest = function(.data,...,mcols = NULL,.name = "ndt"){
 
   dt = .data
 
-  if(substitute(mcols) %>% deparse() == "NULL") nest_by(dt,...)
+  if(substitute(mcols) %>% deparse() == "NULL")
+    setnames(nest_by(dt,...),old = "ndt",new = .name)[]
   else{
     name_list = substitute(mcols)%>%
       lapply(deparse) %>%
@@ -109,8 +110,6 @@ nest = function(.data,...,mcols = NULL){
   }
 
 }
-
-
 
 nest_by = function(.data,...){
   dt = .data
@@ -155,14 +154,15 @@ unnest_col = function(.data,...){
 
 # nest which columns?
 
-squeeze = function(.data,...){
+squeeze = function(.data,...,.name = "ndt"){
   dt = .data
   dt %>% select_dt(...) %>%
     setNames(NULL) %>%
     apply(1,list) %>%
     lapply(unlist)-> ndt
-  dt[,ndt := ndt][]
+  dt[,(.name) := ndt][]
 }
+
 
 #' @rdname nest
 #' @export

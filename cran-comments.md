@@ -1,4 +1,14 @@
 
+## 0.9.20
+1. Change the vignette to address the issue.
+2. Fix ORCID.
+
+## 0.5.7
+1. Change the title of package
+2. Export `rleid` from data.table
+3. Add ".name" paramter to `nest` and `squeeze`
+4. Make modifications to pass CRAN test.
+
 ## v0.4.5
 
 Date: 20200408

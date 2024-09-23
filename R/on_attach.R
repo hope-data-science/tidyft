@@ -1,6 +1,6 @@
 .onAttach = function(...) {
     options("datatable.print.class" = TRUE,
-            "datatable.print.trunc.cols" = TRUE,
+            # "datatable.print.trunc.cols" = TRUE,
             "datatable.print.keys" = TRUE)
     hints = c(
         "Life's short, use R."

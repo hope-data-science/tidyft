@@ -1,4 +1,3 @@
-
 #' @title Join tables
 #' @description  The mutating joins add columns from `y` to `x`,
 #' matching rows based on the keys:
@@ -180,4 +179,3 @@ semi_join = function(x,y,by = NULL, on = NULL){
     x[w]
   }
 }
-

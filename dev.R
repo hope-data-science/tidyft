@@ -1,7 +1,7 @@
 
 library(pacman)
 p_load(devtools,usethis,roxygen2,pkgdown,badger)
-p_load(fst,stringr,data.table,tidyft)
+p_load(fst,stringr,data.table)
 
 document()
 #install(upgrade = "never",dependencies = F,quick = T)
@@ -13,6 +13,10 @@ library(tidyft)
 
 options(pkgdown.internet = F)
 build_site()
+
+
+# build_vignettes()
+
 
 submit_cran()
 

@@ -47,3 +47,8 @@ data.table::transpose
 #' @export
 data.table::setnames
 
+#' @export
+data.table::rleid
+
+#' @export
+data.table::rleidv
