@@ -1,0 +1,10 @@
+
+reference:
+- title: Basic single-table verbs
+  contents:
+  - mutate
+  - select
+  - arrange
+  - filter
+  - summarise
+  - group_by
