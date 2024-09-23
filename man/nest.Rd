@@ -8,11 +8,11 @@
 \alias{unchop}
 \title{Nest and unnest}
 \usage{
-nest(.data, ..., mcols = NULL)
+nest(.data, ..., mcols = NULL, .name = "ndt")
 
 unnest(.data, ...)
 
-squeeze(.data, ...)
+squeeze(.data, ..., .name = "ndt")
 
 chop(.data, ...)
 
@@ -26,7 +26,9 @@ columns to be nested(for \code{squeeze} and \code{chop}),
 or column(s) to be unnested(for \code{unnest}).
 Could recieve anything that \code{\link[tidyfst]{select_dt}} could receive.}
 
-\item{mcols}{Name-variable pairs in the list, form like
+\item{mcols}{Name-variable pairs in the list, form like}
+
+\item{.name}{Character. The nested column name. Defaults to "ndt".
 \code{list(petal="^Pe",sepal="^Se")}, see example.}
 }
 \value{

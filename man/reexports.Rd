@@ -17,6 +17,8 @@
 \alias{CJ}
 \alias{transpose}
 \alias{setnames}
+\alias{rleid}
+\alias{rleidv}
 \title{Objects exported from other packages}
 \keyword{internal}
 \description{
@@ -24,7 +26,7 @@ These objects are imported from other packages. Follow the links
 below to see their documentation.
 
 \describe{
-  \item{data.table}{\code{\link[data.table:J]{CJ}}, \code{\link[data.table]{as.data.table}}, \code{\link[data.table]{copy}}, \code{\link[data.table]{data.table}}, \code{\link[data.table:coalesce]{fcoalesce}}, \code{\link[data.table]{fread}}, \code{\link[data.table]{fwrite}}, \code{\link[data.table]{rbindlist}}, \code{\link[data.table]{setDT}}, \code{\link[data.table:setattr]{setnames}}, \code{\link[data.table]{tables}}, \code{\link[data.table]{transpose}}, \code{\link[data.table:duplicated]{uniqueN}}}
+  \item{data.table}{\code{\link[data.table]{as.data.table}}, \code{\link[data.table:J]{CJ}}, \code{\link[data.table]{copy}}, \code{\link[data.table]{data.table}}, \code{\link[data.table:coalesce]{fcoalesce}}, \code{\link[data.table]{fread}}, \code{\link[data.table]{fwrite}}, \code{\link[data.table]{rbindlist}}, \code{\link[data.table]{rleid}}, \code{\link[data.table:rleid]{rleidv}}, \code{\link[data.table]{setDT}}, \code{\link[data.table:setattr]{setnames}}, \code{\link[data.table]{tables}}, \code{\link[data.table]{transpose}}, \code{\link[data.table:duplicated]{uniqueN}}}
 
   \item{stringr}{\code{\link[stringr:pipe]{\%>\%}}}
 }}
